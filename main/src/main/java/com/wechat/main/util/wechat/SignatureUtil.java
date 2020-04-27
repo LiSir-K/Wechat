@@ -2,6 +2,7 @@ package com.wechat.main.util.wechat;
 
 
 import com.wechat.main.config.WechatConfig;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -9,6 +10,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * 请求校验工具类
  */
+@Slf4j
 public class SignatureUtil {
     /**
      * 验证签名
@@ -33,7 +35,7 @@ public class SignatureUtil {
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
+        log.info("token:{},tmpStr:{},signature:toUpperCase{}",WechatConfig.TOKEN,tmpStr,signature.toUpperCase());
         // 将sha1加密后的字符串可与signature对比，标识该请求来源于微信
         return tmpStr != null && tmpStr.equals(signature.toUpperCase());
     }

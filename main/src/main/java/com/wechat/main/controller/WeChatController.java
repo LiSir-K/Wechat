@@ -2,6 +2,7 @@ package com.wechat.main.controller;
 
 import com.wechat.main.service.WeChatService;
 import com.wechat.main.util.wechat.SignatureUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Slf4j
 @RestController
 public class WeChatController {
 
@@ -29,6 +31,7 @@ public class WeChatController {
                            @RequestParam(value = "timestamp") String timestamp,
                            @RequestParam(value = "nonce") String nonce,
                            @RequestParam(value = "echostr") String echostr) {
+        log.info("signature:{},timestamp:{},nonce:{},echostr:{}",signature,timestamp,nonce,echostr);
         return SignatureUtil.check(signature, timestamp, nonce) ? echostr : null;
     }
 
