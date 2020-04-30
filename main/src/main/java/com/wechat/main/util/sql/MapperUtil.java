@@ -1,5 +1,6 @@
 package com.wechat.main.util.sql;
 
+import com.wechat.main.mapper.AccessTokenInfoMapper;
 import com.wechat.main.mapper.NpcMapper;
 import com.wechat.main.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ public class MapperUtil {
     private UserMapper userMapper;
     @Autowired
     private NpcMapper npcMapper;
+    @Autowired
+    private AccessTokenInfoMapper accessTokenInfoMapper;
 
     private static MapperUtil mapperUtil;
 
@@ -31,5 +34,9 @@ public class MapperUtil {
 
     public  NpcMapper getNpcMapper() {
         return this.npcMapper;
+    }
+
+    public AccessTokenInfoMapper getAccessTokenInfoMapper() {
+        return accessTokenInfoMapper;
     }
 }

@@ -18,4 +18,36 @@ public class User {
         this.money = money;
         this.prizeTime = prizeTime;
     }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public Double getMoney() {
+        return money;
+    }
+
+    public void setMoney(Double money) {
+        this.money = money;
+    }
+
+    public Integer getPrizeTime() {
+        return prizeTime;
+    }
+
+    public void setPrizeTime(Integer prizeTime) {
+        this.prizeTime = prizeTime;
+    }
 }

@@ -1,19 +1,22 @@
 package com.wechat.main.controller;
 
+import com.wechat.main.config.WechatConfig;
+import com.wechat.main.entity.token.AccessToken;
 import com.wechat.main.service.WeChatService;
 import com.wechat.main.util.wechat.SignatureUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @RestController
 public class WeChatController {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private WeChatService weChatService;
@@ -43,4 +46,16 @@ public class WeChatController {
         // 调用核心服务类接收处理请求
         return weChatService.processRequest(request);
     }
+
+    /**
+     * 获取AccessToken
+     *
+     * @return
+     */
+    @RequestMapping(value = "getAccessToken")
+    public AccessToken getAccessToken(){
+        AccessToken accessToken = weChatService.getAccessToken();
+        return accessToken;
+    }
+
 }
