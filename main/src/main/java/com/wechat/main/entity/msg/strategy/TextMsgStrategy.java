@@ -18,12 +18,14 @@ public class TextMsgStrategy implements MsgStrategy {
         MoneyTextChain moneyChain = new MoneyTextChain();
         AbstractTextChain tencentChain = new TencentTextChain();
         AbstractTextChain baiduChain = new BaiduTextChain();
+        AbstractTextChain zhajhTextChain = new ZhajhTextChain();
 
         priceChain.setNext(hammerOrMilkChain);
         hammerOrMilkChain.setNext(hpChain);
         hpChain.setNext(moneyChain);
         moneyChain.setNext(tencentChain);
         tencentChain.setNext(baiduChain);
+        baiduChain.setNext(zhajhTextChain);
         // 交给责任链执行
         return priceChain.sendMsg(requestMap);
     }
