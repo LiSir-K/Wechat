@@ -14,17 +14,16 @@ import com.wechat.main.util.HttpClient;
 import com.wechat.main.util.date.DateUtil;
 import com.wechat.main.util.sql.MapperUtil;
 import com.wechat.main.util.wechat.XmlUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class WeChatServiceImpl implements WeChatService {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     public String processRequest(HttpServletRequest request) {
         // 默认返回的文本消息内容

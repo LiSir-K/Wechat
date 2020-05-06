@@ -1,12 +1,9 @@
 package com.wechat.main.controller;
 
-import com.wechat.main.config.WechatConfig;
 import com.wechat.main.entity.token.AccessToken;
 import com.wechat.main.service.WeChatService;
 import com.wechat.main.util.wechat.SignatureUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 public class WeChatController {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private WeChatService weChatService;
