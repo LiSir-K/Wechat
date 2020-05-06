@@ -8,4 +8,7 @@ public interface WeChatService {
     String processRequest(HttpServletRequest request);
 
     AccessToken getAccessToken();
+
+    String setMenu();
+
 }

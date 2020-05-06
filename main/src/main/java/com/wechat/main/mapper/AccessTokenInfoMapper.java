@@ -20,8 +20,8 @@ public interface AccessTokenInfoMapper {
     @Select("select * from access_token_info where del_flag = 0 order by create_time limit 1")
     AccessTokenInfo getTokenInfoByDelFlag();
 
-    @Insert("insert into access_token_info (token,del_flag) values (#{token},#{delFlag})")
-    int saveToken(String token ,String delFlag);
+    @Insert("insert into access_token_info (token,del_flag,expire_second) values (#{token},#{delFlag},#{expireSecond})")
+    int saveToken(AccessTokenInfo accessTokenInfo);
 
     @Update("update access_token_info set del_flag = 1 where id = #{id}")
     int updateOldTokenDelFlag(Long id);

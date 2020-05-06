@@ -54,4 +54,11 @@ public class WeChatController {
         return accessToken;
     }
 
+    /**
+     * 设置菜单
+     */
+    @RequestMapping(value = "setMenu")
+    public String setMenu(){
+        return weChatService.setMenu();
+    }
 }

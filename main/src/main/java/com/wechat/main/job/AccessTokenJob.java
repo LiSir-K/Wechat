@@ -40,7 +40,13 @@ public class AccessTokenJob {
                 if(updateToken == 0){
                     log.info("定时任务--刷新token失败 保存修改旧token失败");
                 }
-                int saveToken = accessTokenInfoMapper.saveToken(accessToken.getTokenName(), "0");
+                AccessTokenInfo accessTokenInfo = new AccessTokenInfo();
+                accessTokenInfo.setToken(accessToken.getTokenName());
+                accessTokenInfo.setDelFlag("0");
+                accessTokenInfo.setCreateTime(new Date());
+                accessTokenInfo.setUpdateTime(new Date());
+                accessTokenInfo.setExpireSecond(accessToken.getExpireSecond());
+                int saveToken = accessTokenInfoMapper.saveToken(accessTokenInfo);
                 if(saveToken == 0){
                     log.info("定时任务--刷新token失败 保存新token失败");
                     return;

@@ -6,6 +6,7 @@ public class AccessTokenInfo {
     private Long id;
     private String token;
     private String delFlag;
+    private Integer expireSecond;
     private Date createTime;
     private Date updateTime;
 
@@ -31,6 +32,14 @@ public class AccessTokenInfo {
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public Integer getExpireSecond() {
+        return expireSecond;
+    }
+
+    public void setExpireSecond(Integer expireSecond) {
+        this.expireSecond = expireSecond;
     }
 
     public Date getCreateTime() {

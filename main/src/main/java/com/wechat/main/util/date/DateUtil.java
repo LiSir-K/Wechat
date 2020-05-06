@@ -46,15 +46,14 @@ public class DateUtil {
         return result;
     }
 
-    /**
-     * 时间格式化函数，格式化为yyyy-MM-dd HH:mm:ss
-     *<b>Summary: </b>
-     * formatDate()
-     * @param date
-     * @return
-     */
     public static String formatDate(Date date){
-        return formatDate(date);
+        SimpleDateFormat sdf =  null;
+        if(date == null){
+            return "";
+        }
+        sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String result = sdf.format(date);
+        return result;
     }
 
     /**
