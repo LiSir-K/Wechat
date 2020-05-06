@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration scan="true">
-    <property name="logDir" value="usr/local/logs" />
+    <property name="logDir" value="${user.dir}/logs" />
     <springProperty scope="context" name="app.name" source="spring.application.name"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
