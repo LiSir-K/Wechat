@@ -18,6 +18,8 @@ public class MapperUtil {
     private MenuMapper menuMapper;
     @Autowired
     private RoomMapper roomMapper;
+    @Autowired
+    private PlayersMapper playersMapper;
 
     private static MapperUtil mapperUtil;
 
@@ -48,5 +50,9 @@ public class MapperUtil {
 
     public RoomMapper getRoomMapper() {
         return roomMapper;
+    }
+
+    public PlayersMapper getPlayersMapper() {
+        return playersMapper;
     }
 }

@@ -1,13 +1,17 @@
 package com.wechat.main.entity.msg.chain;
 
+import com.wechat.main.entity.game.Players;
 import com.wechat.main.entity.game.Room;
 import com.wechat.main.entity.mysql.User;
+import com.wechat.main.mapper.PlayersMapper;
 import com.wechat.main.mapper.RoomMapper;
 import com.wechat.main.mapper.UserMapper;
 import com.wechat.main.util.sql.MapperUtil;
 import com.wechat.main.util.wechat.SendUtil;
 import com.wechat.main.util.wechat.WeChatConstant;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,12 +21,28 @@ import java.util.Map;
  */
 public class RoomTextChain extends AbstractTextChain {
 
-    public RoomTextChain() {
-        super("room", "房间","创建房间");
+    @Override
+    public String sendMsg(Map<String,String> requestMap) {
+        if ("创建房间".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return send(requestMap);
+        } else if ("我的房间".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return sendMyRoom(requestMap);
+        } else if ("开牌".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return sendOpenPoker(requestMap);
+        } else if ("加入房间".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return sendJoinRoom(requestMap);
+        } else if ("房间列表".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return sendRoomList(requestMap);
+        }
+        return next != null ? next.sendMsg(requestMap) : new TuringTextChain().send(requestMap);
     }
 
-    public RoomTextChain(String... keywords) {
-        super(keywords);
+    protected String sendJoinRoom(Map<String, String> requestMap) {
+        return null;
+    }
+
+    protected String sendRoomList(Map<String, String> requestMap) {
+        return null;
     }
 
 
@@ -30,6 +50,7 @@ public class RoomTextChain extends AbstractTextChain {
     protected String send(Map<String, String> requestMap) {
         String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
         UserMapper userMapper = MapperUtil.getInstance().getUserMapper();
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
         User user = userMapper.getUserByOpenId(openId);
         if(user == null){
             User newUser = new User();
@@ -53,9 +74,42 @@ public class RoomTextChain extends AbstractTextChain {
             newRoom.setDelFlag("0");
             roomMapper.addRoom(newRoom);
             room = roomMapper.getRoomByOpenId(openId);
+            Players players = new Players();
+            players.setOpenId(openId);
+            players.setRoomId(room.getId());
+            playersMapper.addPlayers(players);
         } else {
-            return SendUtil.sendTextMsg(requestMap,"您已经创建好房间了,房间号是"+room.getId()+",房间名字是"+room.getRoomName());
+            return SendUtil.sendTextMsg(requestMap,"您已经创建好房间了\n房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime());
         }
-        return SendUtil.sendTextMsg(requestMap,"房间创建完成,房间号是"+room.getId()+",房间名字是"+room.getRoomName());
+        return SendUtil.sendTextMsg(requestMap,"房间创建完成\n房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime());
+    }
+
+    protected String sendMyRoom(Map<String, String> requestMap) {
+        String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
+        RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
+        UserMapper userMapper = MapperUtil.getInstance().getUserMapper();
+        Room room = roomMapper.getRoomByOpenId(openId);
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        List<Players> players = playersMapper.getPlayersByRoomId(room.getId());
+        if (players != null){
+            String roomsPlayers = "";
+            for (Players player :players) {
+                User user = userMapper.getUserByOpenId(player.getOpenId());
+                String pickName = user.getPickName();
+                if(pickName == null || pickName.equals("")){
+                    pickName = "陌生玩家";
+                }
+                roomsPlayers = roomsPlayers +","+ pickName;
+            }
+            return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime()
+                    +"\n用户数量:"+players.size()+1+"\n分别有:"+roomsPlayers);
+        } else {
+            return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime()+"\n用户数量:"+players.size()+1);
+        }
+    }
+
+    protected String sendOpenPoker(Map<String, String> requestMap){
+
+        return null;
     }
 }

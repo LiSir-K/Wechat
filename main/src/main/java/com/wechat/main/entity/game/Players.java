@@ -1,29 +1,27 @@
 package com.wechat.main.entity.game;
 
-/**
- * @Author: LiSir
- * @Description:com.wechat.main.entity.game
- * @Date: Create in 15:17 2020/5/7
- */
-
 import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * @Author: LiSir
+ * @Description:com.wechat.main.entity.game
+ * @Date: Create in 16:19 2020/5/7
+ */
 @Data
-public class Room {
-
-    private String id;
+public class Players {
+    private Integer id ;
     private String openId;
-    private String roomName;
+    private String roomId;
     private String delFlag;
     private Date createTime;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -35,12 +33,12 @@ public class Room {
         this.openId = openId;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public String getRoomId() {
+        return roomId;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
     public String getDelFlag() {
