@@ -38,11 +38,39 @@ public class RoomTextChain extends AbstractTextChain {
     }
 
     protected String sendJoinRoom(Map<String, String> requestMap) {
-        return null;
+        String content = requestMap.get(WeChatConstant.CONTENT);
+        String[] split = content.split(":");
+        if(split.length > 2){
+            return SendUtil.sendTextMsg(requestMap,"格式错误");
+        }
+        String id = split[1];
+        RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
+        Room room = roomMapper.getRoomById(id);
+
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        Players players = new Players();
+        players.setRoomId(room.getId());
+        players.setOpenId(requestMap.get(WeChatConstant.FROM_USER_NAME));
+        players.setDelFlag("0");
+        int i = playersMapper.addPlayers(players);
+        if (i == 1) {
+            return SendUtil.sendTextMsg(requestMap,"加入成功");
+        }
+        return SendUtil.sendTextMsg(requestMap,"加入失败");
     }
 
     protected String sendRoomList(Map<String, String> requestMap) {
-        return null;
+        MapperUtil instance = MapperUtil.getInstance();
+        RoomMapper roomMapper = instance.getRoomMapper();
+        List<Room> rooms = roomMapper.getAllRoom();
+        if (rooms != null) {
+            String roomNum = "";
+            for (Room room:rooms) {
+                roomNum = "房间号:"+room.getId()+"\n";
+            }
+            return SendUtil.sendTextMsg(requestMap,"房间列表:\n"+roomNum+"\n需要加入房间请输入'加入房间:房间号 (例: 加入房间:1)'");
+        }
+        return SendUtil.sendTextMsg(requestMap,"当前没有房间");
     }
 
 
