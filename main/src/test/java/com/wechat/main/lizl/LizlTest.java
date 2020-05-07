@@ -2,9 +2,11 @@ package com.wechat.main.lizl;
 
 import com.wechat.main.MainApplication;
 import com.wechat.main.config.WechatConfig;
+import com.wechat.main.entity.mysql.User;
 import com.wechat.main.entity.token.AccessToken;
 import com.wechat.main.entity.token.AccessTokenInfo;
 import com.wechat.main.mapper.AccessTokenInfoMapper;
+import com.wechat.main.mapper.UserMapper;
 import com.wechat.main.util.sql.MapperUtil;
 import org.junit.runner.RunWith;
 import org.junit.Test;
@@ -74,5 +76,15 @@ public class LizlTest {
         System.out.println(s1 + " " + s2 + " " + s3);
     }
 
+    @Test
+    public void Test03(){
+        UserMapper userMapper = MapperUtil.getInstance().getUserMapper();
+        User user = new User();
+        user.setMoney(1000000.00);
+        user.setOpenId("ol6eXwh9n3c6ic5vxitor4yOXZgc");
+        user.setPrizeTime(1588833164);
+        int i = userMapper.addUser(user);
+        System.out.println(i);
+    }
 
 }

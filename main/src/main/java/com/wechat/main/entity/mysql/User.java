@@ -2,12 +2,16 @@ package com.wechat.main.entity.mysql;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class User {
     private Integer id;
+    private String pickName;
     private String openId;
     private Double money;
     private Integer prizeTime;
+    private Date createTime;
 
     public User() {
 
@@ -25,6 +29,14 @@ public class User {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getPickName() {
+        return pickName;
+    }
+
+    public void setPickName(String pickName) {
+        this.pickName = pickName;
     }
 
     public String getOpenId() {
@@ -49,5 +61,13 @@ public class User {
 
     public void setPrizeTime(Integer prizeTime) {
         this.prizeTime = prizeTime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

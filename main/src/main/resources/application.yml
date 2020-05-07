@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: wechat
   datasource:
     url: jdbc:mysql://cdb-a2xpyo4g.bj.tencentcdb.com:10134/wechat?serverTimezone=Asia/Shanghai
     username: root

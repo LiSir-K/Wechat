@@ -1,9 +1,6 @@
 package com.wechat.main.util.sql;
 
-import com.wechat.main.mapper.AccessTokenInfoMapper;
-import com.wechat.main.mapper.MenuMapper;
-import com.wechat.main.mapper.NpcMapper;
-import com.wechat.main.mapper.UserMapper;
+import com.wechat.main.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +16,8 @@ public class MapperUtil {
     private AccessTokenInfoMapper accessTokenInfoMapper;
     @Autowired
     private MenuMapper menuMapper;
+    @Autowired
+    private RoomMapper roomMapper;
 
     private static MapperUtil mapperUtil;
 
@@ -45,5 +44,9 @@ public class MapperUtil {
 
     public MenuMapper getMenuMapper() {
         return menuMapper;
+    }
+
+    public RoomMapper getRoomMapper() {
+        return roomMapper;
     }
 }
