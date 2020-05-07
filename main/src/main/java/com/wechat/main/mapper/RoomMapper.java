@@ -21,9 +21,9 @@ public interface RoomMapper {
     @Insert("insert into room (open_id , room_name , del_flag) values (#{openId} , #{roomName} , #{delFlag})")
     int addRoom(Room newRoom);
 
-    @Select("select * from room wehre del_flag = 0")
+    @Select("select * from room where del_flag = 0")
     List<Room> getAllRoom();
 
-    @Select("select * form room where id = #{id} and del_flag = 0 order by create_time limit 1")
+    @Select("select * from room where id = #{id} and del_flag = 0 order by create_time limit 1")
     Room getRoomById(String id);
 }

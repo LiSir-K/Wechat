@@ -6,6 +6,7 @@ import com.wechat.main.entity.mysql.User;
 import com.wechat.main.mapper.PlayersMapper;
 import com.wechat.main.mapper.RoomMapper;
 import com.wechat.main.mapper.UserMapper;
+import com.wechat.main.util.date.DateUtil;
 import com.wechat.main.util.sql.MapperUtil;
 import com.wechat.main.util.wechat.SendUtil;
 import com.wechat.main.util.wechat.WeChatConstant;
@@ -29,7 +30,7 @@ public class RoomTextChain extends AbstractTextChain {
             return sendMyRoom(requestMap);
         } else if ("开牌".equals(requestMap.get(WeChatConstant.CONTENT))) {
             return sendOpenPoker(requestMap);
-        } else if ("加入房间".equals(requestMap.get(WeChatConstant.CONTENT))) {
+        } else if (requestMap.get(WeChatConstant.CONTENT).contains("加入房间")) {
             return sendJoinRoom(requestMap);
         } else if ("房间列表".equals(requestMap.get(WeChatConstant.CONTENT))) {
             return sendRoomList(requestMap);
@@ -52,6 +53,10 @@ public class RoomTextChain extends AbstractTextChain {
         players.setRoomId(room.getId());
         players.setOpenId(requestMap.get(WeChatConstant.FROM_USER_NAME));
         players.setDelFlag("0");
+        Players player = playersMapper.getPlayersByRoomIdAndOpenId(room.getId(), players.getOpenId());
+        if (player != null) {
+            return SendUtil.sendTextMsg(requestMap,"加入失败,您已经在这个房间了");
+        }
         int i = playersMapper.addPlayers(players);
         if (i == 1) {
             return SendUtil.sendTextMsg(requestMap,"加入成功");
@@ -120,7 +125,7 @@ public class RoomTextChain extends AbstractTextChain {
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
         List<Players> players = playersMapper.getPlayersByRoomId(room.getId());
         if (players != null){
-            String roomsPlayers = "";
+            String roomsPlayers = "您";
             for (Players player :players) {
                 User user = userMapper.getUserByOpenId(player.getOpenId());
                 String pickName = user.getPickName();
@@ -130,9 +135,10 @@ public class RoomTextChain extends AbstractTextChain {
                 roomsPlayers = roomsPlayers +","+ pickName;
             }
             return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime()
-                    +"\n用户数量:"+players.size()+1+"\n分别有:"+roomsPlayers);
+                    +"\n用户数量:"+players.size()+"\n分别有:"+roomsPlayers);
         } else {
-            return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime()+"\n用户数量:"+players.size()+1);
+            return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"
+                    + DateUtil.formatDate(room.getCreateTime())+"\n用户数量:"+players.size());
         }
     }
 

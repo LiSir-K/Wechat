@@ -15,9 +15,12 @@ import java.util.List;
 @Mapper
 public interface PlayersMapper {
 
+    @Select("select * from players where room_id = #{roomId} and open_id = #{openId} and del_flag = 0 order by create_time limit 1")
+    Players getPlayersByRoomIdAndOpenId(String roomId, String openId);
+
     @Select("select * from players where room_id = #{roomId} and del_flag = 0")
     List<Players> getPlayersByRoomId(String roomId);
 
-    @Insert("insert into players (openId , room_id , del_flag) values (#{openId} , #{roomId} , 0)")
+    @Insert("insert into players (open_id , room_id , del_flag) values (#{openId} , #{roomId} , 0)")
     int addPlayers(Players players);
 }
