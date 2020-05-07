@@ -44,4 +44,7 @@ public interface UserMapper {
      */
     @Select("select count(1) from user where open_id = #{openId}")
     int getUserCountByOpenId(String openId);
+
+    @Update("update user set pick_name = #{pickName} where id = #{id}")
+    int updatePickName(String pickName, Integer id);
 }

@@ -41,8 +41,8 @@ public class RoomTextChain extends AbstractTextChain {
     protected String sendJoinRoom(Map<String, String> requestMap) {
         String content = requestMap.get(WeChatConstant.CONTENT);
         String[] split = content.split(":");
-        if(split.length > 2){
-            return SendUtil.sendTextMsg(requestMap,"格式错误");
+        if(split.length != 2){
+            return SendUtil.sendTextMsg(requestMap,"加入房间格式错误,请按照格式修改(例: 加入房间:1)");
         }
         String id = split[1];
         RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
