@@ -112,9 +112,11 @@ public class RoomTextChain extends AbstractTextChain {
             players.setRoomId(room.getId());
             playersMapper.addPlayers(players);
         } else {
-            return SendUtil.sendTextMsg(requestMap,"您已经创建好房间了\n房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime());
+            return SendUtil.sendTextMsg(requestMap,"您已经创建好房间了\n房间号是:"+room.getId()+
+                    "\n房间名字是:"+room.getRoomName()+"\n创建时间:"+DateUtil.formatDate(room.getCreateTime()));
         }
-        return SendUtil.sendTextMsg(requestMap,"房间创建完成\n房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime());
+        return SendUtil.sendTextMsg(requestMap,"房间创建完成\n房间号是:"+room.getId()+
+                "\n房间名字是:"+room.getRoomName()+"\n创建时间:"+DateUtil.formatDate(room.getCreateTime()));
     }
 
     protected String sendMyRoom(Map<String, String> requestMap) {
@@ -125,14 +127,14 @@ public class RoomTextChain extends AbstractTextChain {
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
         List<Players> players = playersMapper.getPlayersByRoomId(room.getId());
         if (players != null){
-            String roomsPlayers = "您";
+            String roomsPlayers = "";
             for (Players player :players) {
                 User user = userMapper.getUserByOpenId(player.getOpenId());
                 String pickName = user.getPickName();
                 if(pickName == null || pickName.equals("")){
                     pickName = "陌生玩家";
                 }
-                roomsPlayers = roomsPlayers +","+ pickName;
+                roomsPlayers = roomsPlayers + pickName+"\n";
             }
             return SendUtil.sendTextMsg(requestMap,"您的房间号是:"+room.getId()+"\n房间名字是:"+room.getRoomName()+"\n创建时间:"+room.getCreateTime()
                     +"\n用户数量:"+players.size()+"\n分别有:"+roomsPlayers);
