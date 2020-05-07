@@ -20,6 +20,7 @@ public class TextMsgStrategy implements MsgStrategy {
         AbstractTextChain baiduChain = new BaiduTextChain();
         AbstractTextChain zhajhTextChain = new ZhajhTextChain();
         AbstractTextChain roomTextChain = new RoomTextChain();
+        AbstractTextChain userTextChain = new UserTextChain();
 
         priceChain.setNext(hammerOrMilkChain);
         hammerOrMilkChain.setNext(hpChain);
@@ -28,6 +29,7 @@ public class TextMsgStrategy implements MsgStrategy {
         tencentChain.setNext(baiduChain);
         baiduChain.setNext(zhajhTextChain);
         zhajhTextChain.setNext(roomTextChain);
+        roomTextChain.setNext(userTextChain);
         // 交给责任链执行
         return priceChain.sendMsg(requestMap);
     }
