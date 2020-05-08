@@ -7,6 +7,7 @@ import com.wechat.main.mapper.PlayersMapper;
 import com.wechat.main.mapper.RoomMapper;
 import com.wechat.main.mapper.UserMapper;
 import com.wechat.main.util.date.DateUtil;
+import com.wechat.main.util.poker.MakePoker;
 import com.wechat.main.util.sql.MapperUtil;
 import com.wechat.main.util.wechat.SendUtil;
 import com.wechat.main.util.wechat.WeChatConstant;
@@ -30,12 +31,43 @@ public class RoomTextChain extends AbstractTextChain {
             return sendMyRoom(requestMap);
         } else if ("开牌".equals(requestMap.get(WeChatConstant.CONTENT))) {
             return sendOpenPoker(requestMap);
+        } else if ("发牌".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return sendPoker(requestMap);
         } else if (requestMap.get(WeChatConstant.CONTENT).contains("加入房间")) {
             return sendJoinRoom(requestMap);
         } else if ("房间列表".equals(requestMap.get(WeChatConstant.CONTENT))) {
             return sendRoomList(requestMap);
         }
         return next != null ? next.sendMsg(requestMap) : new TuringTextChain().send(requestMap);
+    }
+
+    protected String sendPoker(Map<String, String> requestMap) {
+        String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
+        RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        Room room = roomMapper.getRoomByOpenId(openId);
+        int flag = 0 ;
+        if (room.getIsSendPoker().equals("1") ) {
+            return SendUtil.sendTextMsg(requestMap,"您已经发过牌了,请先开牌再发牌");
+        }
+        if (room != null){
+           this.sendPoker(requestMap,room);
+           flag = roomMapper.updateIsSendPoker(room);
+        } else {
+            Players player = playersMapper.getPlayersBuOpenId(openId);
+            if (player.getPoker() != null) {
+                return SendUtil.sendTextMsg(requestMap,"发牌成功,您的牌是:\n"+player.getPoker());
+            } else {
+                Room roomById = roomMapper.getRoomById(player.getRoomId());
+                this.sendPoker(requestMap,roomById);
+                flag = roomMapper.updateIsSendPoker(room);
+            }
+        }
+        if (flag != 1 ){
+            return SendUtil.sendTextMsg(requestMap,"发牌失败");
+        }
+        Players player = playersMapper.getPlayersBuOpenId(openId);
+        return SendUtil.sendTextMsg(requestMap,"发牌成功,您的牌是:\n"+player.getPoker());
     }
 
     protected String sendJoinRoom(Map<String, String> requestMap) {
@@ -84,6 +116,10 @@ public class RoomTextChain extends AbstractTextChain {
         String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
         UserMapper userMapper = MapperUtil.getInstance().getUserMapper();
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        Players player = playersMapper.getPlayersBuOpenId(openId);
+        if (player != null) {
+            return SendUtil.sendTextMsg(requestMap,"创建房间失败,您已经加入房间了,加入的房间号是:"+player.getRoomId());
+        }
         User user = userMapper.getUserByOpenId(openId);
         if(user == null){
             User newUser = new User();
@@ -145,7 +181,39 @@ public class RoomTextChain extends AbstractTextChain {
     }
 
     protected String sendOpenPoker(Map<String, String> requestMap){
+        String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
+        RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        Players player = playersMapper.getPlayersBuOpenId(openId);
 
-        return null;
+        Room room = roomMapper.getRoomById(player.getRoomId());
+        if (!room.getIsSendPoker().equals("1")) {
+            return SendUtil.sendTextMsg(requestMap,"开牌失败,还没有发牌");
+        }
+        List<Players> players = playersMapper.getPlayersByRoomId(player.getRoomId());
+        String pokers = "";
+        Integer i = 1;
+        for (Players play : players) {
+            String poker = play.getPoker();
+            pokers = "玩家"+ i +"的牌:"+ poker + "\n";
+            i++;
+        }
+        return SendUtil.sendTextMsg(requestMap,pokers);
+    }
+
+    private String sendPoker(Map<String, String> requestMap , Room room){
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        List<Players> players = playersMapper.getPlayersByRoomId(room.getId());
+        List<List<String>> pokers = MakePoker.makePoker(players.size());
+        if(pokers.size() != players.size()){
+            return SendUtil.sendTextMsg(requestMap,"发牌失败");
+        }
+        int i = 0;
+        for (Players player :players) {
+            List<String> list = pokers.get(i);
+            player.setPoker(list.get(0)+","+list.get(1)+","+list.get(2));
+            int flag = playersMapper.UpdatePokerByOpenId(player);
+        }
+        return "";
     }
 }

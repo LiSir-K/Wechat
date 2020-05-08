@@ -15,6 +15,7 @@ public class Players {
     private String openId;
     private String roomId;
     private String delFlag;
+    private String poker;
     private Date createTime;
 
     public Integer getId() {
@@ -47,6 +48,14 @@ public class Players {
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getPoker() {
+        return poker;
+    }
+
+    public void setPoker(String poker) {
+        this.poker = poker;
     }
 
     public Date getCreateTime() {

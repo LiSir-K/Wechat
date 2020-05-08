@@ -4,6 +4,7 @@ import com.wechat.main.entity.game.Players;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -23,4 +24,10 @@ public interface PlayersMapper {
 
     @Insert("insert into players (open_id , room_id , del_flag) values (#{openId} , #{roomId} , 0)")
     int addPlayers(Players players);
+
+    @Update("update players set poker = #{poker} where room_id = #{roomId} and open_id = #{openId}")
+    int UpdatePokerByOpenId(Players player);
+
+    @Select("select * from players where open_id = #{openId} and del_flag = 0")
+    Players getPlayersBuOpenId(String openId);
 }

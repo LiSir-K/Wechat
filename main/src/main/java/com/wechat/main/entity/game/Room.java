@@ -17,6 +17,7 @@ public class Room {
     private String openId;
     private String roomName;
     private String delFlag;
+    private String isSendPoker;
     private Date createTime;
 
     public String getId() {
@@ -49,6 +50,14 @@ public class Room {
 
     public void setDelFlag(String delFlag) {
         this.delFlag = delFlag;
+    }
+
+    public String getIsSendPoker() {
+        return isSendPoker;
+    }
+
+    public void setIsSendPoker(String isSendPoker) {
+        this.isSendPoker = isSendPoker;
     }
 
     public Date getCreateTime() {

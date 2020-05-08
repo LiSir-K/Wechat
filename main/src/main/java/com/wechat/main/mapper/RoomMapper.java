@@ -4,6 +4,7 @@ import com.wechat.main.entity.game.Room;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface RoomMapper {
 
     @Select("select * from room where id = #{id} and del_flag = 0 order by create_time limit 1")
     Room getRoomById(String id);
+
+    @Update("update room set is_send_poker = 1 where id = #{id} and del_flag = 0")
+    int updateIsSendPoker(Room room);
 }
