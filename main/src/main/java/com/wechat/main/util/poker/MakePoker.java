@@ -76,7 +76,7 @@ public class MakePoker {
         //一副54张的牌 ArrayList里边为0-53的数的新牌
         ArrayList<Integer> cards = new ArrayList<Integer>();
 
-        for (int i = 0; i <= 53; i++) {
+        for (int i = 0; i <= 51; i++) {
             cards.add(i);
         }
 

@@ -37,20 +37,44 @@ public class RoomTextChain extends AbstractTextChain {
             return sendJoinRoom(requestMap);
         } else if ("房间列表".equals(requestMap.get(WeChatConstant.CONTENT))) {
             return sendRoomList(requestMap);
+        } else if ("退出房间".equals(requestMap.get(WeChatConstant.CONTENT))) {
+            return exitRoom(requestMap);
         }
         return next != null ? next.sendMsg(requestMap) : new TuringTextChain().send(requestMap);
+    }
+
+    protected String exitRoom(Map<String, String> requestMap) {
+        String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
+        PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+        Players player = playersMapper.getPlayersBuOpenId(openId);
+        if(player == null){
+            return SendUtil.sendTextMsg(requestMap,"退出失败,您还没有加入房间");
+        }
+        player.setDelFlag("1");
+        int i = playersMapper.exitRoom(player);
+        if (i == 1){
+            return SendUtil.sendTextMsg(requestMap,"退出成功");
+        }
+        return SendUtil.sendTextMsg(requestMap,"退出失败");
     }
 
     protected String sendPoker(Map<String, String> requestMap) {
         String openId = requestMap.get(WeChatConstant.FROM_USER_NAME);
         RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
+
+        Players play = playersMapper.getPlayersBuOpenId(openId);
+        if(play == null){
+            return SendUtil.sendTextMsg(requestMap,"您还没有创建或加入房间\n创建房间请出入(创建房间)\n加入房间请输入(加入房间:房间号 例: '加入房间:2' 冒号为英文冒号)");
+        }
+
         Room room = roomMapper.getRoomByOpenId(openId);
         int flag = 0 ;
-        if (room.getIsSendPoker().equals("1") ) {
-            return SendUtil.sendTextMsg(requestMap,"您已经发过牌了,请先开牌再发牌");
-        }
+
         if (room != null){
+            if (room.getIsSendPoker().equals("1") ) {
+                return SendUtil.sendTextMsg(requestMap,"您已经发过牌了,请先开牌再发牌");
+            }
            this.sendPoker(requestMap,room);
            room.setIsSendPoker("1");
            flag = roomMapper.updateIsSendPoker(room);
@@ -61,8 +85,8 @@ public class RoomTextChain extends AbstractTextChain {
             } else {
                 Room roomById = roomMapper.getRoomById(player.getRoomId());
                 this.sendPoker(requestMap,roomById);
-                room.setIsSendPoker("1");
-                flag = roomMapper.updateIsSendPoker(room);
+                roomById.setIsSendPoker("1");
+                flag = roomMapper.updateIsSendPoker(roomById);
             }
         }
         if (flag != 1 ){
@@ -81,6 +105,9 @@ public class RoomTextChain extends AbstractTextChain {
         String id = split[1];
         RoomMapper roomMapper = MapperUtil.getInstance().getRoomMapper();
         Room room = roomMapper.getRoomById(id);
+        if(room == null){
+            return SendUtil.sendTextMsg(requestMap,"请先输入'房间列表'查看房间号");
+        }
 
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
         Players players = new Players();
@@ -105,7 +132,7 @@ public class RoomTextChain extends AbstractTextChain {
         if (rooms != null) {
             String roomNum = "";
             for (Room room:rooms) {
-                roomNum = "房间号:"+room.getId()+"\n";
+                roomNum += "房间号:"+room.getId()+"\n";
             }
             return SendUtil.sendTextMsg(requestMap,"房间列表:\n"+roomNum+"\n需要加入房间请输入'加入房间:房间号 (例: 加入房间:1)'");
         }

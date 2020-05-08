@@ -30,4 +30,7 @@ public interface PlayersMapper {
 
     @Select("select * from players where open_id = #{openId} and del_flag = 0")
     Players getPlayersBuOpenId(String openId);
+
+    @Update("update players set del_flag = #{delFlag} where open_id = #{openId}")
+    int exitRoom(Players player);
 }
