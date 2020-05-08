@@ -28,6 +28,6 @@ public interface RoomMapper {
     @Select("select * from room where id = #{id} and del_flag = 0 order by create_time limit 1")
     Room getRoomById(String id);
 
-    @Update("update room set is_send_poker = 1 where id = #{id} and del_flag = 0")
+    @Update("update room set is_send_poker = #{isSendPoker} where id = #{id} and del_flag = 0")
     int updateIsSendPoker(Room room);
 }

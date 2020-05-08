@@ -52,6 +52,7 @@ public class RoomTextChain extends AbstractTextChain {
         }
         if (room != null){
            this.sendPoker(requestMap,room);
+           room.setIsSendPoker("1");
            flag = roomMapper.updateIsSendPoker(room);
         } else {
             Players player = playersMapper.getPlayersBuOpenId(openId);
@@ -60,6 +61,7 @@ public class RoomTextChain extends AbstractTextChain {
             } else {
                 Room roomById = roomMapper.getRoomById(player.getRoomId());
                 this.sendPoker(requestMap,roomById);
+                room.setIsSendPoker("1");
                 flag = roomMapper.updateIsSendPoker(room);
             }
         }
@@ -186,6 +188,8 @@ public class RoomTextChain extends AbstractTextChain {
         PlayersMapper playersMapper = MapperUtil.getInstance().getPlayersMapper();
         Players player = playersMapper.getPlayersBuOpenId(openId);
 
+        UserMapper userMapper = MapperUtil.getInstance().getUserMapper();
+
         Room room = roomMapper.getRoomById(player.getRoomId());
         if (!room.getIsSendPoker().equals("1")) {
             return SendUtil.sendTextMsg(requestMap,"开牌失败,还没有发牌");
@@ -195,10 +199,20 @@ public class RoomTextChain extends AbstractTextChain {
         Integer i = 1;
         for (Players play : players) {
             String poker = play.getPoker();
-            pokers = "玩家"+ i +"的牌:"+ poker + "\n";
+            User user = userMapper.getUserByOpenId(play.getOpenId());
+            if (user.getPickName().equals("") || user.getPickName() == null) {
+                pokers += "玩家"+ i +"的牌:"+ poker + "\n";
+            } else {
+                pokers += user.getPickName()+"的牌:"+ poker + "\n";
+            }
             i++;
         }
-        return SendUtil.sendTextMsg(requestMap,pokers);
+        room.setIsSendPoker("0");
+        int i1 = roomMapper.updateIsSendPoker(room);
+        if(i1 == 1){
+            return SendUtil.sendTextMsg(requestMap,pokers);
+        }
+        return SendUtil.sendTextMsg(requestMap,"开牌失败");
     }
 
     private String sendPoker(Map<String, String> requestMap , Room room){
@@ -213,6 +227,7 @@ public class RoomTextChain extends AbstractTextChain {
             List<String> list = pokers.get(i);
             player.setPoker(list.get(0)+","+list.get(1)+","+list.get(2));
             int flag = playersMapper.UpdatePokerByOpenId(player);
+            i++;
         }
         return "";
     }
