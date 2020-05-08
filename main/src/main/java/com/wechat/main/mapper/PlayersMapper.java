@@ -25,12 +25,12 @@ public interface PlayersMapper {
     @Insert("insert into players (open_id , room_id , del_flag) values (#{openId} , #{roomId} , 0)")
     int addPlayers(Players players);
 
-    @Update("update players set poker = #{poker} where room_id = #{roomId} and open_id = #{openId}")
+    @Update("update players set poker = #{poker} where room_id = #{roomId} and open_id = #{openId} and del_flag = 0")
     int UpdatePokerByOpenId(Players player);
 
     @Select("select * from players where open_id = #{openId} and del_flag = 0")
     Players getPlayersBuOpenId(String openId);
 
-    @Update("update players set del_flag = #{delFlag} where open_id = #{openId}")
+    @Update("update players set del_flag = #{delFlag} where open_id = #{openId} and room_id = #{roomId}")
     int exitRoom(Players player);
 }

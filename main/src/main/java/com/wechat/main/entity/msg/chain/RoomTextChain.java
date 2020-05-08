@@ -52,7 +52,7 @@ public class RoomTextChain extends AbstractTextChain {
         }
         player.setDelFlag("1");
         int i = playersMapper.exitRoom(player);
-        if (i == 1){
+        if (i >= 1){
             return SendUtil.sendTextMsg(requestMap,"退出成功");
         }
         return SendUtil.sendTextMsg(requestMap,"退出失败");
@@ -80,7 +80,7 @@ public class RoomTextChain extends AbstractTextChain {
            flag = roomMapper.updateIsSendPoker(room);
         } else {
             Players player = playersMapper.getPlayersBuOpenId(openId);
-            if (player.getPoker() != null) {
+            if (player.getPoker() != null && !player.getPoker().equals("")) {
                 return SendUtil.sendTextMsg(requestMap,"发牌成功,您的牌是:\n"+player.getPoker());
             } else {
                 Room roomById = roomMapper.getRoomById(player.getRoomId());
@@ -233,6 +233,8 @@ public class RoomTextChain extends AbstractTextChain {
                 pokers += user.getPickName()+"的牌:"+ poker + "\n";
             }
             i++;
+            play.setPoker("");
+            int id = playersMapper.UpdatePokerByOpenId(play);
         }
         room.setIsSendPoker("0");
         int i1 = roomMapper.updateIsSendPoker(room);
